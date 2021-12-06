@@ -106,36 +106,26 @@ function renderBooks(items, view, templateGetter) {
 }
 
 function getGridEntryTemplate(element, titleParam, imgParam) {
-    const template = $($("#gridEntryTemplate").html());
-    const title = shortenString(element[titleParam], 30);
-    template.find('.entry-title').text(title);
-    if (element.authors) {
-        template.find('.entry-subtitle').text(shortenString(element.authors[0], 30)).removeClass("d-none");
-    }
-
-    const publishedDate = getValueOrDefault(element.publishedDate, x => x.split('-')[0], NOT_AVAILABLE);
-    template.find('.entry-year').text(publishedDate);
-
-    const rating = getValueOrDefault(element.averageRating, x => x, NOT_AVAILABLE);
-    template.find('.entry-rating').text(rating);
-
-    let image = getChildElement(element, imgParam);
-    if (!image) {
-        image = DEFAULT_IMAGE;
-    }
-    template.find('.card-img-top').attr('src', image);
+    const template = getEntryTemplate(element, titleParam, imgParam, "gridEntryTemplate", 30);
     const description = isParamNullOrEmpty("description", element) ? DEFAULT_DESC : shortenString(element.description, 250);
     new bootstrap.Popover(template, { content: description });
     return template;
 }
 
 function getListEntryTemplate(element, titleParam, imgParam) {
-    const template = $($("#listEntryTemplate").html());
-    const title = shortenString(element[titleParam], 150);
+    const template = getEntryTemplate(element, titleParam, imgParam, "listEntryTemplate", 150);
+    const description = isParamNullOrEmpty("description", element) ? DEFAULT_DESC : shortenString(element.description, 600);
+    template.find('.entry-content').text(description);
+    return template;
+}
+
+function getEntryTemplate(element, titleParam, imgParam, templateId, maxLenText){
+    const template = $($(`#${templateId}`).html());
+    const title = shortenString(element[titleParam], maxLenText);
     template.find('.entry-title').text(title);
 
     if (element.authors) {
-        template.find('.entry-subtitle').text(shortenString(element.authors[0], 150)).removeClass("d-none");
+        template.find('.entry-subtitle').text(shortenString(element.authors[0], maxLenText)).removeClass("d-none");
     }
 
     const publishedDate = getValueOrDefault(element.publishedDate, x => x.split('-')[0], NOT_AVAILABLE);
@@ -148,9 +138,7 @@ function getListEntryTemplate(element, titleParam, imgParam) {
     if (!image) {
         image = DEFAULT_IMAGE;
     }
-    template.find('.list-entry-img').attr('src', image);
-    const description = isParamNullOrEmpty("description", element) ? DEFAULT_DESC : shortenString(element.description, 600);
-    template.find('.entry-content').text(description);
+    template.find('.entry-img').attr('src', image);
     return template;
 }
 
@@ -195,7 +183,3 @@ function clearFilter() {
     $("#printType").val("all");
     $("#sorting").val("relevance");
 }
-
-function getValueOrDefault(value, valueGetter, defaultVal) { 
-    return value ? valueGetter(value) : defaultVal;
- }

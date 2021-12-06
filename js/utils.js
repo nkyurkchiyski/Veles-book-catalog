@@ -75,3 +75,7 @@ function shortenString(value, maxLength) {
 
     return `${value.substring(0, maxLength)}...`
 }
+
+function getValueOrDefault(value, valueGetter, defaultVal) { 
+    return value ? valueGetter(value) : defaultVal;
+ }
