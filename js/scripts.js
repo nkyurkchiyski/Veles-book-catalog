@@ -125,7 +125,7 @@ function getEntryTemplate(element, titleParam, imgParam, templateId, maxLenText)
     template.find('.entry-title').text(title);
 
     if (element.authors) {
-        template.find('.entry-subtitle').text(shortenString(element.authors[0], maxLenText)).removeClass("d-none");
+        template.find('.entry-subtitle').text(shortenString(element.authors.join(", "), maxLenText)).removeClass("d-none");
     }
 
     const publishedDate = getValueOrDefault(element.publishedDate, x => x.split('-')[0], NOT_AVAILABLE);
